@@ -46,8 +46,15 @@ public class JournalEntryControllerV2 {
         }
     }
 
-    @PutMapping("id/{uId}")
-    public JournalEntry updateJournalEntryById(@PathVariable ObjectId id,@RequestBody JournalEntry journalEntry){
-        return null;
+    @PutMapping("id/{uid}")
+    public JournalEntry updateJournalEntryById(@PathVariable ObjectId uid,@RequestBody JournalEntry journalEntry){
+        JournalEntry old=journalEntryService.findById(uid).orElse(null);
+        if(old != null){
+            old.setTitle(journalEntry.getTitle() != null && !journalEntry.getTitle().equals("") ? journalEntry.getTitle() : old.getTitle());
+
+            old.setContent(journalEntry.getContent() != null && !journalEntry.getContent().equals("") ? journalEntry.getContent() : old.getContent());
+        }
+        journalEntryService.saveEntry(old);
+        return old;
     }
 }
