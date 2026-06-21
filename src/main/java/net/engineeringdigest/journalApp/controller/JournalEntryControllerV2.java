@@ -26,11 +26,10 @@ public class JournalEntryControllerV2 {
     @Autowired
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("{userName}")
     public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry journalEntry,@PathVariable String userName){
         try {
-            User user = userService.findByUserName(userName);
-            journalEntryService.saveEntry(journalEntry);
+            journalEntryService.saveEntry(journalEntry,userName);
             return new ResponseEntity<>(journalEntry,HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -58,20 +57,20 @@ public class JournalEntryControllerV2 {
         }
     }
 
-    @DeleteMapping("/id/{dId}")
-    public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId dId) {
-            journalEntryService.deleteById(dId);
+    @DeleteMapping("/id/{userName}/{dId}")
+    public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId dId,@PathVariable String userName) {
+            journalEntryService.deleteById(dId, userName);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("id/{uid}")
-    public ResponseEntity<?> updateJournalEntryById(@PathVariable ObjectId uid,@RequestBody JournalEntry journalEntry){
+    @PutMapping("id/{userName}/{uid}")
+    public ResponseEntity<?> updateJournalEntryById(@PathVariable ObjectId uid,@PathVariable String userName,@RequestBody JournalEntry journalEntry){
         JournalEntry old=journalEntryService.findById(uid).orElse(null);
         if(old != null){
             old.setTitle(journalEntry.getTitle() != null && !journalEntry.getTitle().equals("") ? journalEntry.getTitle() : old.getTitle());
 
             old.setContent(journalEntry.getContent() != null && !journalEntry.getContent().equals("") ? journalEntry.getContent() : old.getContent());
-            journalEntryService.saveEntry(old);
+            journalEntryService.saveEntry(old,userName);
             return new ResponseEntity<>(old,HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
