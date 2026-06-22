@@ -1,5 +1,6 @@
 package net.engineeringdigest.journalApp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
@@ -22,6 +23,7 @@ public class User {
     @NonNull
     private String userName;
     @NonNull
+    @JsonIgnore
     private String password;
 
     @DBRef
