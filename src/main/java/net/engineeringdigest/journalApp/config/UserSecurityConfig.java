@@ -12,9 +12,9 @@ public class UserSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/hello").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/journal/**","/user/**").authenticated()
+                .anyRequest().permitAll()
                 .and()
-                .formLogin();
+                .httpBasic();
     }
 }
